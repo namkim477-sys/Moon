@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f8fc" />
+    <meta name="description" content="공강 점심 메뉴를 조건에 맞춰 빠르게 골라주는 캠퍼스 점심 룰렛" />
+    <title>공강맞춤 — 오늘 점심, 10초 만에!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="공강맞춤 홈">
+          <span class="brand-mark" aria-hidden="true">🍚</span>
+          <span>공강<span class="brand-blue">맞춤</span></span>
+        </a>
+        <div class="campus-note"><span class="live-dot"></span> 캠퍼스 점심 룰렛</div>
+      </header>
+
+      <main id="top">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <div class="eyebrow"><span>👋</span> 고민은 짧게, 점심은 맛있게</div>
+            <h1 id="hero-title">오늘 공강 점심,<br /><span>10초 만에 정하자!</span></h1>
+            <p>먹고 싶은 것만 골라봐요.<br class="mobile-break" /> 오늘의 점심은 저희가 정해드릴게요.</p>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <span class="sparkle sparkle-one">✦</span>
+            <span class="sparkle sparkle-two">✦</span>
+            <div class="plate"><span>🍜</span></div>
+            <span class="floating-food food-one">🥢</span>
+            <span class="floating-food food-two">🥟</span>
+            <span class="hero-sticker">점심 해결!</span>
+          </div>
+        </section>
+
+        <div class="content-grid">
+          <section class="panel filter-panel" aria-labelledby="filter-title">
+            <div class="section-heading">
+              <div><span class="step-label">STEP 01</span><h2 id="filter-title">오늘의 취향 고르기</h2></div>
+              <button class="text-button" id="reset-button" type="button">초기화 ↺</button>
+            </div>
+
+            <div class="filter-section">
+              <div class="field-heading"><h3>어떤 메뉴가 끌려요?</h3><span>하나만 선택</span></div>
+              <div class="category-grid" id="category-options" role="group" aria-label="음식 카테고리">
+                <button class="category-chip selected" type="button" data-category="전체" aria-pressed="true"><span>✨</span> 전체</button>
+                <button class="category-chip" type="button" data-category="한식" aria-pressed="false"><span>🍚</span> 한식</button>
+                <button class="category-chip" type="button" data-category="중식" aria-pressed="false"><span>🥡</span> 중식</button>
+                <button class="category-chip" type="button" data-category="일식" aria-pressed="false"><span>🍣</span> 일식</button>
+                <button class="category-chip" type="button" data-category="분식" aria-pressed="false"><span>🍢</span> 분식</button>
+                <button class="category-chip" type="button" data-category="양식" aria-pressed="false"><span>🍝</span> 양식</button>
+              </div>
+            </div>
+
+            <div class="filter-section budget-section">
+              <div class="field-heading"><h3>예산은 어느 정도로?</h3><span>1인 기준</span></div>
+              <div class="budget-grid" id="budget-options" role="group" aria-label="1인 예산">
+                <button class="budget-chip" type="button" data-budget="8000" aria-pressed="false">8천 원 이하</button>
+                <button class="budget-chip selected" type="button" data-budget="10000" aria-pressed="true">1만 원 이하</button>
+                <button class="budget-chip" type="button" data-budget="15000" aria-pressed="false">1만 5천 원 이하</button>
+                <button class="budget-chip" type="button" data-budget="all" aria-pressed="false">상관없어요</button>
+              </div>
+            </div>
+
+            <div class="filter-section exclude-section">
+              <div class="field-heading"><h3>오늘은 빼고 싶은 메뉴</h3><span>최대 3개</span></div>
+              <p class="field-hint">싫어하는 메뉴나 재료를 한 단어씩 적어주세요. (한글·영문 10자 이내)</p>
+              <form id="exclude-form" class="tag-form" novalidate>
+                <label class="sr-only" for="exclude-input">제외 메뉴 입력</label>
+                <input id="exclude-input" type="text" maxlength="10" placeholder="예: 해산물" autocomplete="off" />
+                <button type="submit" aria-label="제외 메뉴 추가">추가</button>
+              </form>
+              <p class="input-error" id="input-error" aria-live="polite"></p>
+              <div class="tag-list" id="tag-list" aria-label="제외 메뉴 목록"></div>
+            </div>
+
+            <div class="filter-footer">
+              <p class="count-line" aria-live="polite">조건에 맞는 식당 <strong id="candidate-count">0</strong><span>곳</span></p>
+              <div class="empty-message" id="empty-message" hidden>
+                <span aria-hidden="true">🧐</span>
+                <p>조건에 맞는 식당이 없어요.<br /><strong>필터를 살짝 완화해 볼까요?</strong></p>
+                <button type="button" id="empty-reset">조건 초기화</button>
+              </div>
+              <button class="primary-button" id="pick-button" type="button">
+                <span>🎲</span> 메뉴 뽑기 <span class="button-arrow">→</span>
+              </button>
+              <p class="privacy-note"><span>✦</span> 버튼 한 번이면 오늘 점심 결정!</p>
+            </div>
+          </section>
+
+          <aside class="side-column">
+            <section class="panel result-panel" aria-live="polite" aria-labelledby="result-title">
+              <div class="section-heading result-heading">
+                <div><span class="step-label">STEP 02</span><h2 id="result-title">오늘의 점심 픽</h2></div>
+                <span class="status-pill" id="result-status">대기 중</span>
+              </div>
+              <div class="result-content" id="result-content">
+                <div class="waiting-illustration" aria-hidden="true">
+                  <div class="waiting-sun">☀️</div><div class="waiting-bowl">🍜</div>
+                  <span class="waiting-orbit orbit-a">✦</span><span class="waiting-orbit orbit-b">✧</span>
+                </div>
+                <p class="waiting-title">두근두근, 뭐가 나올까요?</p>
+                <p class="waiting-copy">취향을 고르고 버튼을 누르면<br />룰렛이 오늘의 점심을 골라줘요.</p>
+                <div class="mini-preview"><span>✨</span><span>공강맞춤 룰렛</span><span>✨</span></div>
+              </div>
+              <div class="result-content roulette-content" id="roulette-content" hidden>
+                <div class="roulette-wheel" aria-hidden="true"><div class="wheel-center">🍽️</div><span class="wheel-label label-one">한식</span><span class="wheel-label label-two">일식</span><span class="wheel-label label-three">분식</span><span class="wheel-label label-four">양식</span></div>
+                <div class="rolling-name" id="rolling-name">식당 찾는 중...</div>
+                <p class="roulette-copy">최적의 공강 점심 식당을 고르는 중<span class="loading-dots">...</span></p>
+              </div>
+              <div class="result-content winner-content" id="winner-content" hidden>
+                <div class="winner-banner"><span>🎉</span> 오늘의 공강 점심 당첨!</div>
+                <div class="winner-emoji" id="winner-emoji" aria-hidden="true">🍜</div>
+                <div class="winner-details">
+                  <span class="winner-category" id="winner-category">한식 · 든든한 한 끼</span>
+                  <h3 id="winner-name">식당 이름</h3>
+                  <p class="winner-menu" id="winner-menu">대표 메뉴: 메뉴 이름</p>
+                </div>
+                <div class="winner-meta"><span id="winner-price">₩10,000</span><span class="meta-divider"></span><span id="winner-distance">🚶 도보 5분</span></div>
+                <div class="share-preview" id="share-preview"></div>
+                <button class="copy-button" id="copy-button" type="button">📋 결과 복사하기</button>
+                <button class="reroll-button" id="reroll-button" type="button">🔄 이 식당 제외하고 다시 뽑기</button>
+                <button class="secondary-button" id="result-reset" type="button">조건 다시 설정하기</button>
+              </div>
+              <div class="all-seen-content" id="all-seen-content" hidden>
+                <div class="all-seen-icon">✅</div>
+                <h3>후보를 모두 확인했어요</h3>
+                <p>선택한 조건의 식당을 다 둘러봤어요.<br />조건을 바꾸면 새로운 후보를 찾을게요.</p>
+                <button class="secondary-button" id="all-seen-reset" type="button">조건 다시 설정하기</button>
+              </div>
+            </section>
+
+            <div class="tip-card"><span class="tip-icon">💡</span><p><strong>친구와 같이 보고 골라요!</strong><br />결과를 복사해서 단톡방에 공유해 보세요.</p><span class="tip-sparkle">✦</span></div>
+            <div class="data-note">* 캠퍼스 주변 예시 식당 데이터로 구성했어요.</div>
+          </aside>
+        </div>
+
+        <section class="candidate-section" aria-labelledby="candidate-title">
+          <div class="candidate-heading"><div><span class="step-label">YOUR OPTIONS</span><h2 id="candidate-title">오늘의 후보 식당 <span class="candidate-count-small" id="candidate-count-small">0</span></h2></div><span class="candidate-subtitle">필터에 맞는 곳만 모았어요</span></div>
+          <div class="candidate-list" id="candidate-list"></div>
+        </section>
+      </main>
+      <footer>공강맞춤 <span>·</span> 고민 없는 점심시간을 위해 🍱</footer>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+  </body>
+</html>
